@@ -1,0 +1,64 @@
+﻿@model GameProject.MvcUI.Models.GameViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+
+    @if (@Model.Game != null)
+    {
+        <h1 class="h3 mb-0 text-gray-800">@Model.Game.Name</h1>
+
+    }
+    else
+    {
+        <h1 class="h3 mb-0 text-gray-800">Add New Game</h1>
+    }
+
+    @Html.ActionLink("Back to previous page", null, null, null, new { href = Request.UrlReferrer })
+
+</div>
+
+
+
+@using (Html.BeginForm("Save", "Game", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    string imageBase64 = Convert.ToBase64String(@Model.Game.GameImage.ImageContent);
+    string imageSrc = string.Format("data:image/jpg;base64,{0}", imageBase64);
+
+    <div class="row">
+        <div class="col">
+            @Html.LabelFor(m => m.Game.Name)
+            @Html.TextBoxFor(m => m.Game.Name, new { @class = "form-control" })
+        </div>
+        <div class="col">
+            @Html.LabelFor(m => m.Game.Description)
+            @Html.TextBoxFor(m => m.Game.Description, new { @class = "form-control" })
+        </div>
+        <div class="col">
+            @Html.LabelFor(m => m.Categories)
+            @Html.DropDownListFor(m => m.Game.CategoryId,
+                new SelectList(Model.Categories,
+                    "Id",
+                    "Name"),
+                "Select Category",
+                new { @class = "form-control" })
+        </div>
+    </div>
+    @Html.LabelFor(m => m.Game.GameImage)
+
+    <img src="@imageSrc" height="150px" width="250px" alt="@Model.Game.GameImage.Description" class="img">
+
+
+    @Html.HiddenFor(m => m.Game.Id)
+
+
+    <button type="submit" class="btn btn-success">Save</button>
+}

@@ -1,0 +1,56 @@
+﻿@model GameProject.Entity.Concrete.Category
+
+@{
+    ViewBag.Title = "title";
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">@Model.Description</h1>
+
+    @if (User.IsInRole("A"))
+    {
+        <a class="btn btn-primary float-right ml-1" href="@Url.Action("New","Game")">Add New Game</a>
+    }
+
+</div>
+
+
+<div class="row">
+
+
+
+    @foreach (var game in Model.Games)
+    {
+
+        string imageBase64 = Convert.ToBase64String(game.GameImage.ImageContent);
+        string imageSrc = string.Format("data:image/jpg;base64,{0}", imageBase64);
+
+        <div class="col-xl-3 col-md-6 mb-4 ">
+            <div class="card-deck">
+                <div class="card shadow mb-4">
+                    <img class="card-img-top" height="150px" src="@imageSrc" alt="@game.GameImage.Description">
+                    <div class="card-body">
+                        <h5 class="card-title">@game.Name</h5>
+                        <small class="card-text">@game.Description</small>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Sepete Ekle</small>
+
+                        @if (User.IsInRole("A"))
+                        {
+                            <a class="btn btn-primary float-right ml-1" href="@Url.Action("Edit","Game",new {gameId = game.Id})"><i class="fas fa-edit fa-sm"></i></a>
+                        }
+
+                        <a class="btn btn-primary float-right" href="#"><i class="fas fa-search fa-sm"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+</div>
